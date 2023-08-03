@@ -27,11 +27,12 @@ export default class ReviewsController {
     try {
       const reviewId = req.body.review_id
       const text = req.body.text
+      const userId = req.body.user_id
       const date = new Date()
 
       const reviewResponse = await ReviewsDAO.updateReview(
         reviewId,
-        req.body.user_id,
+        userId,
         text,
         date,
       )
@@ -55,9 +56,9 @@ export default class ReviewsController {
 
   static async apiDeleteReview(req, res, next) {
     try {
-      const reviewId = req.query.id
+      const reviewId = req.body.review_id
       const userId = req.body.user_id
-      console.log(reviewId)
+      //console.log(reviewId)
       const reviewResponse = await ReviewsDAO.deleteReview(
         reviewId,
         userId,
