@@ -1,8 +1,14 @@
+//DAO is a type of abstraction that isolates the code responsible for data access and persistence 
+//from the code responsible for performing application logic.
+
 import mongodb from "mongodb"
 const ObjectId = mongodb.ObjectID
-let restaurants
+let restaurants //let statement to set a variable name equal to an expression or a function, or to create views
 
 export default class RestaurantsDAO {
+    //await operator is used to wait for a Promise and get its fulfillment value
+    //async function declaration creates a binding of a new async function to a given name
+  
   static async injectDB(conn) {
     if (restaurants) {
       return
@@ -23,6 +29,10 @@ export default class RestaurantsDAO {
   } = {}) {
     let query
     if (filters) {
+      
+      //Text search queries must have a text index on your collection. MongoDB provides text indexes to support text search queries on string content. 
+      //Text indexes can include any field whose value is a string or an array of string elements
+      
       if ("name" in filters) {
         query = { $text: { $search: filters["name"] } }
       } else if ("cuisine" in filters) {
