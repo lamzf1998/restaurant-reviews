@@ -8,11 +8,13 @@ const MongoClient = mongodb.MongoClient
 
 const port = process.env.PORT || 8000
 
+// process.env is a global variable injected at runtime by your Node.js application to depict the state of the environment your app is in at the time of initiation and utilize the same at runtime
+
 MongoClient.connect(
   process.env.RESTREVIEWS_DB_URI,
   {
-    poolSize: 50,
-    wtimeout: 2500,
+    maxPoolSize: 50,
+    wtimeoutMS: 2500,
     useNewUrlParse: true }
   )
   .catch(err => {
