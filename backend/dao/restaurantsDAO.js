@@ -68,19 +68,21 @@ export default class RestaurantsDAO {
   }
   static async getRestaurantByID(id) {
     try {
-      const pipeline = [
+        //create aggregation pipelines to match different collections together
+        //documents enter multi-stage pipeline that transform documents into aggregated results
+        const pipeline = [
         {
             $match: {
-                _id: new ObjectId(id),
+                _id: new ObjectId(id), //id of certain restaurant
             },
         },
               {
                   $lookup: {
-                      from: "reviews",
+                      from: "reviews", //lookup from review collection to add to the result
                       let: {
                           id: "$_id",
                       },
-                      pipeline: [
+                      pipeline: [ //pipeline to find reviews that match restaurant_id
                           {
                               $match: {
                                   $expr: {
@@ -99,7 +101,7 @@ export default class RestaurantsDAO {
               },
               {
                   $addFields: {
-                      reviews: "$reviews",
+                      reviews: "$reviews", //adds new field reviews into the result
                   },
               },
           ]
