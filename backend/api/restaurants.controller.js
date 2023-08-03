@@ -1,6 +1,6 @@
 //Controller file for route file to access the DAO file
 
-import RestaurantsDAO from "../dao/restaurantsDAO.js"
+import RestaurantsDAO from "../api/dao/restaurantsDAO.js"
 
 export default class RestaurantsController {
   //api url with "?<query> called and returns query string
