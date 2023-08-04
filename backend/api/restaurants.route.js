@@ -9,9 +9,13 @@ router.route("/id/:id").get(RestaurantsCtrl.apiGetRestaurantById)
 router.route("/cuisines").get(RestaurantsCtrl.apiGetRestaurantCuisines)
 
 router
-  .route("/review")
+  .route("/reviews")
+  .get(ReviewsCtrl.apiGetReviews)
   .post(ReviewsCtrl.apiPostReview)
   .put(ReviewsCtrl.apiUpdateReview)
   .delete(ReviewsCtrl.apiDeleteReview)
+router
+  .route("reviews/id/:id")
+  .get(ReviewsCtrl.apiGetReviewsById)
 
 export default router

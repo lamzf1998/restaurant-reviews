@@ -1,6 +1,34 @@
-import ReviewsDAO from "../api/dao/reviewsDAO.js"
+import RestaurantsDAO from "../dao/restaurantsDAO.js"
+import ReviewsDAO from "../dao/reviewsDAO.js"
 
 export default class ReviewsController {
+
+  //api url with "?<query> called and returns query string
+  static async apiGetReviews(req, res, next) {
+    const reviewsPerPage = req.query.reviewsPerPage ? parseInt(req.query.reviewsPerPage, 10) : 20
+    const page = req.query.page ? parseInt(req.query.page, 10) : 0
+
+    let filters = {}
+    if (req.query.user_id) {
+      filters.user_id = req.query.user_id
+    } 
+
+    const { reviewsList, totalNumReviews } = await ReviewsDAO.getReviews({
+      filters,
+      page,
+      reviewsPerPage,
+    })
+
+    let response = {
+      reviews: reviewsList,
+      page: page+1,
+      filters: filters,
+      entries_per_page: reviewsPerPage,
+      total_results: totalNumReviews,
+    }
+    res.json(response)
+  }
+
   static async apiPostReview(req, res, next) {
     try {
       const restaurantId = req.body.restaurant_id
@@ -69,4 +97,18 @@ export default class ReviewsController {
     }
   }
 
+  static async apiGetReviewsById(req, res, next) {
+    try {
+      let id = req.params.id || {}
+      let reviews = await ReviewsDAO.getReviewsById(id)
+      if (!restaurant) {
+        res.status(404).json({ error: "Not found" })
+        return
+      }
+      res.json(reviews)
+    } catch(e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({error : e })
+    }
+  }
 }

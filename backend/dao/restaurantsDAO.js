@@ -40,6 +40,7 @@ export default class RestaurantsDAO {
       } else if ("zipcode" in filters) {
         query = { "address.zipcode": { $eq: filters["zipcode"] } }
       }
+      console.log(query)
     }
 
     let cursor
@@ -66,6 +67,7 @@ export default class RestaurantsDAO {
       return { restaurantsList: [], totalNumRestaurants: 0 }
     }
   }
+
   static async getRestaurantByID(id) {
     try {
         //create aggregation pipelines to match different collections together

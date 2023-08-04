@@ -15,6 +15,64 @@ export default class ReviewsDAO {
     }
   }
 
+  static async getReviews({
+    filters = null,
+    page = 0,
+    reviewsPerPage = 20,
+  } = {}) {
+    let query
+    if (filters) {
+      
+      //Text search queries must have a text index on your collection. MongoDB provides text indexes to support text search queries on string content. 
+      //Text indexes can include any field whose value is a string or an array of string elements
+      
+      if ("user_id" in filters) {
+        query = { "user_id": { $eq: filters["user_id"] } }
+        console.log(query)
+      }
+    }
+
+    let cursor
+    
+    try {
+      cursor = await reviews
+        .find(query)
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return { reviewsList: [], totalNumReviews: 0 }
+    }
+
+    const displayCursor = cursor.limit(reviewsPerPage).skip(reviewsPerPage * page)
+
+    try {
+      const reviewsList = await displayCursor.toArray()
+      const totalNumReviews = await reviews.countDocuments(query)
+
+      return { reviewsList, totalNumReviews }
+    } catch (e) {
+      console.error(
+        `Unable to convert cursor to array or problem counting documents, ${e}`,
+      )
+      return { reviewsList: [], totalNumReviews: 0 }
+    }
+  }
+
+  static async getReviewsById(id) {
+    try {
+      const getReviewPipeline = [{
+        $match: {
+          _id: new ObjectId(id),
+        }
+      }
+    ]
+      return await reviews.aggregate(getReviewPipeline).next()
+    } catch (e) {
+      console.error(`error ${e}`)
+      throw e
+    }
+  }
+  
+
   static async addReview(restaurantId, user, review, date) {
     try {
       const reviewDoc = { name: user.name,

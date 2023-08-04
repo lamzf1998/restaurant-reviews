@@ -1,6 +1,6 @@
 //Controller file for route file to access the DAO file
 
-import RestaurantsDAO from "../api/dao/restaurantsDAO.js"
+import RestaurantsDAO from "../dao/restaurantsDAO.js"
 
 export default class RestaurantsController {
   //api url with "?<query> called and returns query string
@@ -25,13 +25,14 @@ export default class RestaurantsController {
 
     let response = {
       restaurants: restaurantsList,
-      page: page,
+      page: page+1,
       filters: filters,
       entries_per_page: restaurantsPerPage,
       total_results: totalNumRestaurants,
     }
     res.json(response)
   }
+
   static async apiGetRestaurantById(req, res, next) {
     try {
       let id = req.params.id || {}
